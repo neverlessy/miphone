@@ -50,7 +50,7 @@ imgui.OnInitialize(function()
     local glyph_ranges_icon = imgui.GetIO().Fonts:GetGlyphRangesCyrillic()
     local iconRanges = imgui.new.ImWchar[3](fa.min_range, fa.max_range, 0)
     imgui.GetIO().Fonts:AddFontFromFileTTF('trebucbd.ttf', 14.0, nil, glyph_ranges_icon)
-    icon = imgui.GetIO().Fonts:AddFontFromFileTTF('moonloader/resource/fonts/Fa6Pro-solid-900.otf', 16.0, config, iconRanges)
+    icon = imgui.GetIO().Fonts:AddFontFromFileTTF(getWorkingDirectory()..'/resource/MiPhone/fonts/Fa6Pro-solid-900.otf', 16.0, config, iconRanges)
 
     local glyph_ranges = imgui.GetIO().Fonts:GetGlyphRangesCyrillic()
     font = {
