@@ -19,6 +19,7 @@ local scriptTag = '{CDAF95}[Mi Phone]{b7b7b7} '
 local new = imgui.new
 local sizeX, sizeY = getScreenResolution()
 local font = {}
+local icon
 local serverName
 local messagesList, dateNum, dateText, whoSender, msgText = {}, {}, {}, {}, {}
 local messagesListAll, messagesListAllMsg, messagesListAllDateNum, messagesListAllDateText, messagesListAllstatusMsg = {}, {}, {}, {}, {}
@@ -42,14 +43,16 @@ imgui.OnInitialize(function()
     local glyph_ranges_icon = imgui.GetIO().Fonts:GetGlyphRangesCyrillic()
     local iconRanges = imgui.new.ImWchar[3](fa.min_range, fa.max_range, 0)
     imgui.GetIO().Fonts:AddFontFromFileTTF('trebucbd.ttf', 14.0, nil, glyph_ranges_icon)
-    icon = imgui.GetIO().Fonts:AddFontFromFileTTF(getWorkingDirectory()..'/resource/MiPhone/fonts/Fa6Pro-solid-900.otf', 16.0, config, iconRanges)
-
     local glyph_ranges = imgui.GetIO().Fonts:GetGlyphRangesCyrillic()
+    --icon = imgui.GetIO().Fonts:AddFontFromFileTTF(getWorkingDirectory()..'/resource/MiPhone/fonts/Fa6Pro-solid-900.otf', 16.0, config, iconRanges)
+    --otherIcon = imgui.GetIO().Fonts:AddFontFromFileTTF('trebucbd.ttf', 24.0, nil, glyph_rangesglyph_ranges_icon)
+    --icon = imgui.GetIO().Fonts:AddFontFromFileTTF(getWorkingDirectory()..'/resource/MiPhone/fonts/Fa6Pro-solid-900.otf', 26.0, config, iconRanges)
     font = {
         [10] = imgui.GetIO().Fonts:AddFontFromFileTTF(getWorkingDirectory()..'/resource/MiPhone/fonts/SFDR.otf', 15.0, nil, glyph_ranges),
-        [45] = imgui.GetIO().Fonts:AddFontFromFileTTF(getWorkingDirectory()..'/resource/MiPhone/fonts/SFDR.otf', 45.0, nil, glyph_ranges)
+        icon = imgui.GetIO().Fonts:AddFontFromFileTTF(getWorkingDirectory()..'/resource/MiPhone/fonts/Fa6Pro-solid-900.otf', 16.0, config, iconRanges),
+        [45] = imgui.GetIO().Fonts:AddFontFromFileTTF(getWorkingDirectory()..'/resource/MiPhone/fonts/SFDR.otf', 45.0, nil, glyph_ranges),
+        icon = imgui.GetIO().Fonts:AddFontFromFileTTF(getWorkingDirectory()..'/resource/MiPhone/fonts/Fa6Pro-solid-900.otf', 26.0, config, iconRanges)
     }
-
     styleInit()
 end)
 
@@ -62,15 +65,15 @@ local phoneCallMenu = imgui.OnFrame(
             imgui.Begin("Main Window", callMenu, imgui.WindowFlags.NoResize + imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoScrollbar + imgui.WindowFlags.NoTitleBar--[[ + imgui.WindowFlags.NoBackground + imgui.WindowFlags.NoScrollWithMouse]])
             local DL = imgui.GetWindowDrawList()
             imgui.PushFont(font[10])
-                imgui.Text(""..serverName, imgui.SetCursorPosX(15.0), imgui.SetCursorPosY(8.0))
-                imgui.Text("5G", imgui.SetCursorPosY(8.0), imgui.SetCursorPosX(230.0))
-            imgui.PopFont()
-            imgui.PushFont(font[45])
-                imgui.PushStyleColor(imgui.Col.Text, imgui.ImVec4(0.00, 0.00, 0.00, 1.00))
-                if sampTextdrawGetString(2121) ~= '_' then
-                    imgui.CenterText(""..sampTextdrawGetString(2121), imgui.SetCursorPosY(60.0))
-                end
-                imgui.PopStyleColor(1)
+            imgui.PushStyleColor(imgui.Col.Text, imgui.ImVec4(0.00, 0.00, 0.00, 1.00))
+                    imgui.Text(""..serverName, imgui.SetCursorPosX(15.0), imgui.SetCursorPosY(8.0))
+                    imgui.Text("5G", imgui.SetCursorPosY(8.0), imgui.SetCursorPosX(230.0))
+                imgui.PopFont()
+                imgui.PushFont(font[45])
+                    if sampTextdrawGetString(2121) ~= '_' then
+                        imgui.CenterText(""..sampTextdrawGetString(2121), imgui.SetCursorPosY(60.0))
+                    end
+            imgui.PopStyleColor(1)
             imgui.PopFont()
             imgui.PushStyleVarFloat(imgui.StyleVar.FrameRounding, 94)
                 imgui.PushFont(font[45])
@@ -103,7 +106,20 @@ local phoneCallMenu = imgui.OnFrame(
                     imgui.PushStyleColor(imgui.Col.Button, imgui.ImVec4(1.00, 1.00, 1.00, 0.00))
                     imgui.PushStyleColor(imgui.Col.ButtonHovered, imgui.ImVec4(1.00, 1.00, 1.00, 0.00))
                     imgui.PushStyleColor(imgui.Col.ButtonActive, imgui.ImVec4(1.00, 1.00, 1.00, 0.00))
-                    imgui.PushStyleColor(imgui.Col.Text, imgui.ImVec4(0.00, 0.00, 0.00, 1.00))
+                    imgui.PushStyleColor(imgui.Col.Text, imgui.ImVec4(0.20, 0.20, 0.20, 1.00))
+                        if isKeyJustPressed(48) then sampSendClickTextdraw(callButtons[10]) end
+                        if isKeyJustPressed(49) then sampSendClickTextdraw(callButtons[1]) end
+                        if isKeyJustPressed(50) then sampSendClickTextdraw(callButtons[2]) end
+                        if isKeyJustPressed(51) then sampSendClickTextdraw(callButtons[3]) end
+                        if isKeyJustPressed(52) then sampSendClickTextdraw(callButtons[4]) end
+                        if isKeyJustPressed(53) then sampSendClickTextdraw(callButtons[5]) end
+                        if isKeyJustPressed(54) then sampSendClickTextdraw(callButtons[6]) end
+                        if isKeyJustPressed(55) then sampSendClickTextdraw(callButtons[7]) end
+                        if isKeyJustPressed(56) then sampSendClickTextdraw(callButtons[8]) end
+                        if isKeyJustPressed(57) then sampSendClickTextdraw(callButtons[9]) end
+                        if isKeyJustPressed(32) then sampSendClickTextdraw(callButtons[11]) end
+                        if isKeyJustPressed(8)  then sampSendClickTextdraw(callButtons[13]) end
+                        if isKeyJustPressed(27) then sampSendClickTextdraw(callButtons[12]) end
                         if imgui.Button('1', imgui.ImVec2(60, 60), imgui.SetCursorPosY(150.0), imgui.SetCursorPosX(25.0)) then
                             sampSendClickTextdraw(callButtons[1])
                         end
@@ -131,24 +147,37 @@ local phoneCallMenu = imgui.OnFrame(
                         if imgui.Button('9', imgui.ImVec2(60, 60), imgui.SetCursorPosY(310.0), imgui.SetCursorPosX(185.0)) then
                             sampSendClickTextdraw(callButtons[9])
                         end
-                        if imgui.Button('C', imgui.ImVec2(60, 60), imgui.SetCursorPosY(390.0), imgui.SetCursorPosX(25.0)) then
-                            sampSendClickTextdraw(callButtons[11])
-                        end
                         if imgui.Button('0', imgui.ImVec2(60, 60), imgui.SetCursorPosY(390.0), imgui.SetCursorPosX(105.0)) then
                             sampSendClickTextdraw(callButtons[10])
                         end
-                        if imgui.Button('D', imgui.ImVec2(60, 60), imgui.SetCursorPosY(390.0), imgui.SetCursorPosX(185.0)) then
-                            sampSendClickTextdraw(callButtons[13])
-                        end
-                    imgui.PopStyleColor(4)
-                imgui.PopFont()
+                        imgui.PopFont()
+                        imgui.PopStyleColor(4)
+                        imgui.PushStyleColor(imgui.Col.Text, imgui.ImVec4(1.00, 1.00, 1.00, 1.00))
+                        imgui.PushStyleColor(imgui.Col.Button, imgui.ImVec4(1.00, 1.00, 1.00, 0.00))
+                        imgui.PushStyleColor(imgui.Col.ButtonHovered, imgui.ImVec4(1.00, 1.00, 1.00, 0.00))
+                        imgui.PushStyleColor(imgui.Col.ButtonActive, imgui.ImVec4(1.00, 1.00, 1.00, 0.00))
+                        imgui.PushFont(font[45])
+                            --imgui.SetCursorPosY(310.0) imgui.SetCursorPosX(25.0)
+                            if imgui.Button(fa.ICON_FA_PHONE, imgui.ImVec2(60, 50), imgui.SetCursorPosY(390.0), imgui.SetCursorPosX(25.0)) then
+                                sampSendClickTextdraw(callButtons[11])
+                            end
+                            if imgui.Button(fa.ICON_FA_DELETELEFT, imgui.ImVec2(60, 50), imgui.SetCursorPosY(390.0), imgui.SetCursorPosX(185.0)) then
+                                sampSendClickTextdraw(callButtons[13])
+                            end
+                         imgui.PopFont()
+                        imgui.PopStyleColor(4)
             imgui.PopStyleVar(1)
+            imgui.PushStyleVarFloat(imgui.StyleVar.FrameRounding, 7)
+            imgui.PushStyleColor(imgui.Col.Text, imgui.ImVec4(0.20, 0.20, 0.20, 1.00))
+            imgui.PushStyleColor(imgui.Col.Button, imgui.ImVec4(0.21, 0.21, 0.21, 0.40))
             if imgui.Button(u8'Назад', imgui.ImVec2(200, 25), imgui.SetCursorPosX(37.0), imgui.SetCursorPosY(505.0)) then
                 callMenu[0] = not callMenu[0]
                 mainMenu[0] = not mainMenu[0]
                 sampSendClickTextdraw(callButtons[12])
                 sampCloseCurrentDialogWithButton(0)
             end
+            imgui.PopStyleColor(2)
+            imgui.PopStyleVar(1)
         imgui.PopStyleColor(1)
         imgui.End()
         imgui.HideCursor = false
@@ -185,8 +214,8 @@ local messageFrame = imgui.OnFrame(
                 imgui.EndChild()
             imgui.PopStyleColor(1)
         imgui.PushStyleVarFloat(imgui.StyleVar.FrameRounding, 7)
-            imgui.InputText(u8"", sendMessageInput, sizeof(sendMessageInput), imgui.SetCursorPosX(47.0), imgui.SetCursorPosY(440.0))
-            imgui.Text(string.len(u8:decode(str(sendMessageInput))).."/"..((sizeof(sendMessageInput) / 2) - 1), imgui.SetCursorPosY(440.0), imgui.SetCursorPosX(235.0))
+            imgui.InputTextWithHint(''..string.len(u8:decode(str(sendMessageInput))).."/"..((sizeof(sendMessageInput) / 2) - 1), u8'Введите сообщение', sendMessageInput, ffi.sizeof(sendMessageInput) - 1, imgui.SetCursorPosX(47.0), imgui.SetCursorPosY(440.0))
+            --imgui.Text(string.len(u8:decode(str(sendMessageInput))).."/"..((sizeof(sendMessageInput) / 2) - 1), imgui.SetCursorPosY(440.0), imgui.SetCursorPosX(235.0))
             if imgui.Button(u8'Отправить', imgui.ImVec2(200, 25), imgui.SetCursorPosX(37.0), imgui.SetCursorPosY(475.0)) then
                 sampSendDialogResponse(955, 1 , -1, ''..u8:decode(str(sendMessageInput)))
                 imgui.StrCopy(sendMessageInput, '')
@@ -257,6 +286,7 @@ local phoneMainMenu = imgui.OnFrame(
                 imgui.Text("5G", imgui.SetCursorPosY(8.0), imgui.SetCursorPosX(230.0))
             imgui.PopFont()
             imgui.PushStyleVarFloat(imgui.StyleVar.FrameRounding, 7)
+            imgui.PushFont(font[10])
                 if imgui.Button(fa.ICON_FA_HOME, imgui.ImVec2(40, 40), imgui.SetCursorPosY(405.0), imgui.SetCursorPosX(35.0)) then
                     sampSendClickTextdraw(menuButtons[11])
                 end
@@ -311,6 +341,7 @@ local phoneMainMenu = imgui.OnFrame(
                     imgui.PopStyleColor(1)
                 imgui.PopStyleVar(1)
             imgui.EndChild()
+        imgui.PopFont()
         imgui.PopStyleVar(1)
         imgui.End()
         imgui.HideCursor = false
@@ -347,7 +378,9 @@ function main()
             end
         end
     end)]]
-    while true do wait(-1) end
+    while true do wait(0)
+
+    end
 end
 
 function sampev.onSendCommand(text)
