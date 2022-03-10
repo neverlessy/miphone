@@ -10,8 +10,8 @@ local ffi = require 'ffi'
 
 script_name('Mi Phone')
 script_authors('neverlessy')
-script_version('1.0.0')
-script_version_number(2201)
+script_version('0.0.5')
+script_version_number(2205)
 
 
 local script = thisScript()
@@ -170,7 +170,7 @@ local phoneCallMenu = imgui.OnFrame(
             imgui.PushStyleVarFloat(imgui.StyleVar.FrameRounding, 7)
             imgui.PushStyleColor(imgui.Col.Text, imgui.ImVec4(0.20, 0.20, 0.20, 1.00))
             imgui.PushStyleColor(imgui.Col.Button, imgui.ImVec4(0.21, 0.21, 0.21, 0.40))
-            if imgui.Button(u8'Назад', imgui.ImVec2(200, 25), imgui.SetCursorPosX(37.0), imgui.SetCursorPosY(505.0)) then
+            if imgui.Button(u8'РќР°Р·Р°Рґ', imgui.ImVec2(200, 25), imgui.SetCursorPosX(37.0), imgui.SetCursorPosY(505.0)) then
                 callMenu[0] = not callMenu[0]
                 mainMenu[0] = not mainMenu[0]
                 sampSendClickTextdraw(callButtons[12])
@@ -214,13 +214,13 @@ local messageFrame = imgui.OnFrame(
                 imgui.EndChild()
             imgui.PopStyleColor(1)
         imgui.PushStyleVarFloat(imgui.StyleVar.FrameRounding, 7)
-            imgui.InputTextWithHint(''..string.len(u8:decode(str(sendMessageInput))).."/"..((sizeof(sendMessageInput) / 2) - 1), u8'Введите сообщение', sendMessageInput, ffi.sizeof(sendMessageInput) - 1, imgui.SetCursorPosX(47.0), imgui.SetCursorPosY(440.0))
-            --imgui.Text(string.len(u8:decode(str(sendMessageInput))).."/"..((sizeof(sendMessageInput) / 2) - 1), imgui.SetCursorPosY(440.0), imgui.SetCursorPosX(235.0))
-            if imgui.Button(u8'Отправить', imgui.ImVec2(200, 25), imgui.SetCursorPosX(37.0), imgui.SetCursorPosY(475.0)) then
+            imgui.InputTextWithHint('', u8'Р’РІРµРґРёС‚Рµ СЃРѕРѕР±С‰РµРЅРёРµ', sendMessageInput, ffi.sizeof(sendMessageInput) - 1, imgui.SetCursorPosX(47.0), imgui.SetCursorPosY(440.0))
+            imgui.Text(string.len(u8:decode(str(sendMessageInput))).."/"..((sizeof(sendMessageInput) / 2) - 1), imgui.SetCursorPosY(440.0), imgui.SetCursorPosX(235.0))
+            if imgui.Button(u8'РћС‚РїСЂР°РІРёС‚СЊ', imgui.ImVec2(200, 25), imgui.SetCursorPosX(37.0), imgui.SetCursorPosY(475.0)) then
                 sampSendDialogResponse(955, 1 , -1, ''..u8:decode(str(sendMessageInput)))
                 imgui.StrCopy(sendMessageInput, '')
             end
-            if imgui.Button(u8'Назад', imgui.ImVec2(200, 25), imgui.SetCursorPosX(37.0), imgui.SetCursorPosY(505.0)) then
+            if imgui.Button(u8'РќР°Р·Р°Рґ', imgui.ImVec2(200, 25), imgui.SetCursorPosX(37.0), imgui.SetCursorPosY(505.0)) then
                 imgui.StrCopy(sendMessageInput, '')
                 messagesList, dateNum, dateText, whoSender, msgText = {}, {}, {}, {}, {}
                 messageMenu[0] = not messageMenu[0]
@@ -245,9 +245,12 @@ local messagesFrame = imgui.OnFrame(
                     imgui.PushStyleVarFloat(imgui.StyleVar.FrameRounding, 7)
                         for i = 2, #messagesListAll do
                             if messagesListAll[i] ~= nil then
-                                if imgui.Button(''..messagesListAllMsg[i], imgui.ImVec2(235, 60)) then
-                                    sampAddChatMessage(''..sampGetCurrentDialogListItem(), -1)
-                                    sampSendDialogResponse(sampGetCurrentDialogId, 1 , 2, tostring(messagesListAll[i]))
+                                if messagesListAllMsg[i] ~= nil then
+                                    if imgui.Button(''..messagesListAllMsg[i], imgui.ImVec2(235, 60)) then
+                                        sampSendDialogResponse(sampGetCurrentDialogId(), 1 , i - 1, tostring(messagesListAll[i]))
+                                        messageMenu[0] = not messageMenu[0]
+                                        messagesMenu[0] = not messagesMenu[0]
+                                    end
                                 end
                             end
                         end
@@ -256,7 +259,7 @@ local messagesFrame = imgui.OnFrame(
                 imgui.EndChild()
             imgui.PopStyleColor(1)
         imgui.PushStyleVarFloat(imgui.StyleVar.FrameRounding, 15)
-            if imgui.Button(u8'Назад', imgui.ImVec2(200, 25), imgui.SetCursorPosX(37.0), imgui.SetCursorPosY(505.0)) then
+            if imgui.Button(u8'РќР°Р·Р°Рґ', imgui.ImVec2(200, 25), imgui.SetCursorPosX(37.0), imgui.SetCursorPosY(505.0)) then
                 imgui.StrCopy(sendMessageInput, '')
                 messagesListAll, messagesListAllMsg, messagesListAllDateNum, messagesListAllDateText, messagesListAllstatusMsg = {}, {}, {}, {}, {}
                 messagesMenu[0] = not messagesMenu[0]
@@ -272,6 +275,7 @@ local messagesFrame = imgui.OnFrame(
 local phoneMainMenu = imgui.OnFrame(
     function() return mainMenu[0] end,
     function(player)
+        player.HideCursor = false
         imgui.SetNextWindowPos(imgui.ImVec2(sizeX / 3, sizeY / 4), imgui.Cond.FirstUseEver)
         imgui.SetNextWindowSize(imgui.ImVec2(275, 540), imgui.Cond.FirstUseEver)
         imgui.Begin("Main Window", mainMenu, imgui.WindowFlags.NoResize + imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoScrollbar + imgui.WindowFlags.NoTitleBar--[[ + imgui.WindowFlags.NoBackground + imgui.WindowFlags.NoScrollWithMouse]])
@@ -344,7 +348,6 @@ local phoneMainMenu = imgui.OnFrame(
         imgui.PopFont()
         imgui.PopStyleVar(1)
         imgui.End()
-        imgui.HideCursor = false
     end
 )
 
@@ -356,7 +359,7 @@ end
 function main()
     if not isSampfuncsLoaded() or not isSampLoaded() then return end
     while not isSampAvailable() do wait(0) end
-    sampAddChatMessage(scriptTag..'Скрипт успешно загружен. Автор: {CDAF95}'..script.authors[1], -1)
+    sampAddChatMessage(scriptTag..'РЎРєСЂРёРїС‚ СѓСЃРїРµС€РЅРѕ Р·Р°РіСЂСѓР¶РµРЅ. РђРІС‚РѕСЂ: {CDAF95}'..script.authors[1], -1)
     while not sampIsPlayerConnected() do wait(0) end
     if sampGetCurrentServerName():match("Arizona Role Play | (%u%w+-%w+)") then
         serverName = sampGetCurrentServerName():match("Arizona Role Play | (%u%w+-%w+)")
@@ -369,10 +372,10 @@ function main()
     sampRegisterChatCommand('ph', function()
         mainMenu[0] = not mainMenu[0]
     end)
-    --[[addEventHandler('onWindowMessage', function(msg, wparam, lparam) -- Сама функция, в которой будем обрабатывать горячие клавиши. Обратите внимание, что данный способ является наиболее верным в плане оптимизации.
-        if msg == wm.WM_KEYDOWN or msg == wm.WM_SYSKEYDOWN then -- Если клавиша нажата
-            if wparam == vkeys.VK_P then -- И если это клавиша X
-                mainMenu[0] = not mainMenu[0] -- Переключаем состояние рендера
+    --[[addEventHandler('onWindowMessage', function(msg, wparam, lparam) -- РЎР°РјР° С„СѓРЅРєС†РёСЏ, РІ РєРѕС‚РѕСЂРѕР№ Р±СѓРґРµРј РѕР±СЂР°Р±Р°С‚С‹РІР°С‚СЊ РіРѕСЂСЏС‡РёРµ РєР»Р°РІРёС€Рё. РћР±СЂР°С‚РёС‚Рµ РІРЅРёРјР°РЅРёРµ, С‡С‚Рѕ РґР°РЅРЅС‹Р№ СЃРїРѕСЃРѕР± СЏРІР»СЏРµС‚СЃСЏ РЅР°РёР±РѕР»РµРµ РІРµСЂРЅС‹Рј РІ РїР»Р°РЅРµ РѕРїС‚РёРјРёР·Р°С†РёРё.
+        if msg == wm.WM_KEYDOWN or msg == wm.WM_SYSKEYDOWN then -- Р•СЃР»Рё РєР»Р°РІРёС€Р° РЅР°Р¶Р°С‚Р°
+            if wparam == vkeys.VK_P then -- Р РµСЃР»Рё СЌС‚Рѕ РєР»Р°РІРёС€Р° X
+                mainMenu[0] = not mainMenu[0] -- РџРµСЂРµРєР»СЋС‡Р°РµРј СЃРѕСЃС‚РѕСЏРЅРёРµ СЂРµРЅРґРµСЂР°
                 sampSendChat('/phone')
                 lockPlayerControl(false)
             end
@@ -385,7 +388,8 @@ end
 
 function sampev.onSendCommand(text)
     if text == '/phone' then
-        menuMenuButtons = {{x = 57, y = 286}, {x = 72, y = 286}, {x = 86, y = 286}, {x = 101, y = 286}, {x = 101, y = 235}, {x = 100, y = 251}, {x = 101, y = 269}, {x = 86, y = 268}, {x = 71, y = 268}, {x = 72, y = 25}, {x = 56, y = 268}, {x = 57, y = 250}, {x = 57, y = 234}}
+        otherSeek = {{x = 87, y = 201}}
+        menuMenuButtons = {{x = 57, y = 286}, {x = 72, y = 286}, {x = 86, y = 286}, {x = 101, y = 286}, {x = 101, y = 235}, {x = 100, y = 251}, {x = 101, y = 269}, {x = 86, y = 268}, {x = 71, y = 268}, {x = 72, y = 250}, {x = 56, y = 268}, {x = 57, y = 250}, {x = 57, y = 234}}
         callMenuButtons = {{x = 57, y = 216}, {x = 76, y = 216}, {x = 95, y = 216}, {x = 57, y = 238}, {x = 76, y = 238}, {x = 95, y = 238}, {x = 57, y = 258}, {x = 76, y = 258}, {x = 95, y = 258}, {x = 76, y = 279}, {x = 57, y = 279}, {x = 95, y = 279}, {x = 110, y = 206}}
         function sampev.onShowTextDraw(id, data)
             posX = math.floor(data.position.x)
@@ -394,17 +398,27 @@ function sampev.onSendCommand(text)
                 if menuMenuButtons[i].x == posX and menuMenuButtons[i].y == posY then
                     sampAddChatMessage(scriptTag..''..i..' > '..id, -1)
                     menuButtons[i] = id
+                    data.position.x = 50000.0
+                    return { id, data }
                 end
             end
             for i = 1, #callMenuButtons do
                 if callMenuButtons[i].x == posX and callMenuButtons[i].y == posY then
                     sampAddChatMessage(scriptTag..''..i..' > '..id, -1)
                     callButtons[i] = id
+                    data.position.x = 50000.0
+                    return { id, data }
                 end
             end
             for i = 1, #telephoneTrash do
                 if telephoneTrash[i].x == posX and telephoneTrash[i].y == posY then
                     return false
+                end
+            end
+            for i = 1, #otherSeek do
+                if otherSeek[i].x == posX and otherSeek[i].y == posY then
+                    data.position.x = 50000.0
+                    return { id, data }
                 end
             end
         end
@@ -418,7 +432,7 @@ function sampev.onPlaySound(id, position)
 end
 
 function sampev.onShowDialog(id, style, title, button1, button2, text)
-    if title:find("%u%w+_%u%w+") and button1:find("Отправить") then
+    if title:find("%u%w+_%u%w+") and button1:find("РћС‚РїСЂР°РІРёС‚СЊ") then
         userName = title:match("(%u%w+_%u%w+)")
         separator = '\n'
         messagesList, dateNum, dateText, whoSender, msgText = {}, {}, {}, {}, {}
@@ -426,44 +440,45 @@ function sampev.onShowDialog(id, style, title, button1, button2, text)
                 table.insert(messagesList, str)
         end
         for i = 1, #messagesList do
-            dateNum[i], dateText[i], whoSender[i], msgText[i] = string.match(messagesList[i], "%[%{......%}(%d+)%{FFFFFF%} (.+) назад%] %- %{......%}%[(.+)%]%{......%}(.+)")
+            dateNum[i], dateText[i], whoSender[i], msgText[i] = string.match(messagesList[i], "%[%{......%}(%d+)%{FFFFFF%} (.+) РЅР°Р·Р°Рґ%] %- %{......%}%[(.+)%]%{......%}(.+)")
             if dateNum[i] == nil then
-                whoSender[i], msgText[i] = string.match(messagesList[i], "%[%{......%}только что%{......%}%] %- %{......%}%[(.+)%]%{......%}(.+)")
+                whoSender[i], msgText[i] = string.match(messagesList[i], "%[%{......%}С‚РѕР»СЊРєРѕ С‡С‚Рѕ%{......%}%] %- %{......%}%[(.+)%]%{......%}(.+)")
                 dateNum[i] = ''
-                dateText[i] = 'сейчас'
+                dateText[i] = 'СЃРµР№С‡Р°СЃ'
             end
-            if whoSender[i] == 'Вы' then
+            if whoSender[i] == 'Р’С‹' then
                 whoSender[i] = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
-            elseif whoSender[i] == 'Контакт' then
+            elseif whoSender[i] == 'РљРѕРЅС‚Р°РєС‚' then
                 whoSender[i] = userName
             end
-            if dateText[i] == 'дней(я)' then
+            if dateText[i] == 'РґРЅРµР№(СЏ)' then
                 dateText[i] = getDateMessage(tonumber(dateNum[i]))
-            elseif dateText[i] == 'минут(ы)' then
+            elseif dateText[i] == 'РјРёРЅСѓС‚(С‹)' then
                 dateText[i] = getTimeMessage(tonumber(dateNum[i]))
-            elseif dateText[i] == 'час(ов)' then
+            elseif dateText[i] == 'С‡Р°СЃ(РѕРІ)' then
                 if dateNum[i] == '1' or dateNum[i] == '21' then
-                    dateText[i] = dateNum[i]..' час'
+                    dateText[i] = dateNum[i]..' С‡Р°СЃ'
                 elseif dateNum[i] == '2' or dateNum[i] == '3' or dateNum[i] == '4' or dateNum[i] == '22' or dateNum[i] == '23' then
-                    dateText[i] = dateNum[i]..' часа'
+                    dateText[i] = dateNum[i]..' С‡Р°СЃР°'
                 else
-                    dateText[i] = dateNum[i]..' часов'
+                    dateText[i] = dateNum[i]..' С‡Р°СЃРѕРІ'
                 end
-            elseif dateText[i] == 'секунд(ы)' then
-                dateText[i] = dateNum[i]..' сек'
+            elseif dateText[i] == 'СЃРµРєСѓРЅРґ(С‹)' then
+                dateText[i] = dateNum[i]..' СЃРµРє'
             end
         end
-        return { id, style, title, button1, button2, text }
+        return false
     end
-    if text:find("%{......%}На балансе вашего телефона%: %{......%}(%d+).+%{......%}.") then
-        phoneBalance = text:match("%{......%}На балансе вашего телефона%: %{......%}(%d+).+%{......%}.")
+    if text:find("%{......%}РќР° Р±Р°Р»Р°РЅСЃРµ РІР°С€РµРіРѕ С‚РµР»РµС„РѕРЅР°%: %{......%}(%d+).+%{......%}.") then
+        phoneBalance = text:match("%{......%}РќР° Р±Р°Р»Р°РЅСЃРµ РІР°С€РµРіРѕ С‚РµР»РµС„РѕРЅР°%: %{......%}(%d+).+%{......%}.")
         title = scriptTag
-        text = text.gsub(text, "%{......%}На балансе вашего телефона%: %{......%}(%d+).+%{......%}.", '{b7b7b7}Баланс телефона: {CDAF95}'..phoneBalance..'${b7b7b7}.\n Этого хватит на {CDAF95}'..(tonumber(phoneBalance) / 25)..' {b7b7b7}сообщений.')
+        text = text.gsub(text, "%{......%}РќР° Р±Р°Р»Р°РЅСЃРµ РІР°С€РµРіРѕ С‚РµР»РµС„РѕРЅР°%: %{......%}(%d+).+%{......%}.", '{b7b7b7}Р‘Р°Р»Р°РЅСЃ С‚РµР»РµС„РѕРЅР°: {CDAF95}'..phoneBalance..'${b7b7b7}.\n Р­С‚РѕРіРѕ С…РІР°С‚РёС‚ РЅР° {CDAF95}'..(tonumber(phoneBalance) / 25)..' {b7b7b7}СЃРѕРѕР±С‰РµРЅРёР№.')
         return { id, style, title, button1, button2, text }
     end
-    if title:find("Выберите диалог") or button1:find("Отправить") then
+    if title:find("Р’С‹Р±РµСЂРёС‚Рµ РґРёР°Р»РѕРі") or button1:find("РћС‚РїСЂР°РІРёС‚СЊ") then
         separator = '\n'
         messagesList, dateNum, dateText, whoSender, msgText = {}, {}, {}, {}, {}
+        messagesListAll, messagesListAllMsg, messagesListAllDateNum, messagesListAllDateText, messagesListAllstatusMsg = {}, {}, {}, {}, {}
         for str in string.gmatch(text, "([^"..separator.."]+)") do
                 table.insert(messagesListAll, str)
         end
@@ -473,17 +488,17 @@ function sampev.onShowDialog(id, style, title, button1, button2, text)
         for i = 2, #messagesListAll do
             messagesListAll[i] = messagesListAll[i].gsub(messagesListAll[i], "%{......%}", "")
         end
-        sampAddChatMessage(''..messagesListAll[2], -1)
+        return false
     end
 end
 
 function deleteTextdraw(int)
     sampTextdrawDelete(int)
-    sampAddChatMessage(scriptTag..'Удален текстдрав: {CDAF95}'..int, -1)
-    print('[MiPhone] Удален текстдрав: '..int)
+    sampAddChatMessage(scriptTag..'РЈРґР°Р»РµРЅ С‚РµРєСЃС‚РґСЂР°РІ: {CDAF95}'..int, -1)
+    print('[MiPhone] РЈРґР°Р»РµРЅ С‚РµРєСЃС‚РґСЂР°РІ: '..int)
 end
 
-function getDateMessage(days) -- я эту ебаторию 3 дня делал, потому что не знал о !*t, до этого был метод в 20 строк :)
+function getDateMessage(days) -- СЏ СЌС‚Сѓ РµР±Р°С‚РѕСЂРёСЋ 3 РґРЅСЏ РґРµР»Р°Р», РїРѕС‚РѕРјСѓ С‡С‚Рѕ РЅРµ Р·РЅР°Р» Рѕ !*t, РґРѕ СЌС‚РѕРіРѕ Р±С‹Р» РјРµС‚РѕРґ РІ 20 СЃС‚СЂРѕРє :)
     mouth, day, year = os.date("%x", os.time(os.date("!*t")) - (86400 * tonumber(days))):match("(%d+)/(%d+)/(%d+)")
     return day..'.'..mouth..'.'..year
 end
@@ -494,9 +509,9 @@ function getTimeMessage(minutes)
 end
 
 --[[function sampev.onServerMessage(color, text)
-    if text:match('(.+) достал%Xа%X (.+) из кармана') then
+    if text:match('(.+) РґРѕСЃС‚Р°Р»%XР°%X (.+) РёР· РєР°СЂРјР°РЅР°') then
         result, id = sampGetPlayerIdByCharHandle(PLAYER_PED)
-        if text:match(tostring(sampGetPlayerNickname(id))..' достал%Xа%X (.+) из кармана') then
+        if text:match(tostring(sampGetPlayerNickname(id))..' РґРѕСЃС‚Р°Р»%XР°%X (.+) РёР· РєР°СЂРјР°РЅР°') then
             mainMenu[0] = not mainMenu[0]
         end
     end
